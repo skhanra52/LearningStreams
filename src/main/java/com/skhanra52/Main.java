@@ -1,9 +1,8 @@
 package com.skhanra52;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -79,19 +78,92 @@ public class Main {
         System.out.println();
         System.out.println("---------Stream-----------------------------------------------------");
 //        System.out.println(copyForStream);
-//        List<String> result = copyForStream.stream()
-//                .limit(15)
+//        List<String> result = copyForStream.stream()                      // start of the stream
+//                .limit(15)                                                // Stream operation
 //                .filter(s -> (s.charAt(0) == 'B' || s.charAt(0) == 'I'))
-//                .map(s -> s.charAt(0) + "--" + s.substring(1))
-//                .collect(Collectors.toList());
-        List<String> result =
-                copyForStream.stream()
-                        .limit(15)
-                        .filter(s -> s.startsWith("B") || s.startsWith("I"))
-                        .map(s -> s.charAt(0) + "--" + s.substring(1))
-                        .sorted()
-                        .toList();
+//                .map(s -> s.charAt(0) + "--" + s.substring(1))            // together all operation forms stream pipeline
+//                .collect(Collectors.toList());                            // terminal operation
+        // OR ------------------------------
+//        List<String> result =
+//                copyForStream.stream()
+//                        .limit(15)
+//                        .filter(s -> s.startsWith("B") || s.startsWith("I"))
+//                        .map(s -> s.charAt(0) + "--" + s.substring(1))
+//                        .sorted()
+//                        .toList();
+//
+//        System.out.println(result);
 
-        System.out.println(result);
+        /*
+        Streams are Lazy: ------------------------
+            -> Meaning, you can start the stream. However, all the stream operation which are formed pipeline will
+               not execute until the terminal operation called.
+            -> So we can also store the pipeline in a variable and execute it whenever required.
+            -> Streams are single-use, once we consume a stream, it does not return anything.
+               It gives "IllegalStateException"
+       Terminal operations:------------------------
+            -> End the stream pipeline
+            -> Produce a result or side effect
+            -> Trigger execution
+            Examples :  forEach()
+                        collect()
+                        toList()
+                        count()
+                        findFirst()
+                        anyMatch()
+
+         */
+
+        // Storing the pipeline as Stream<String> and executing it whenever required.
+        // Stream<String> lazyResult = copyForStream.stream()
+        //        .limit(15)
+        //        .filter(s -> s.startsWith("B") || s.startsWith("I"))
+        //        .map(s -> s.charAt(0)+"--"+s.substring(1))
+        //        .sorted();
+
+        // lazyResult.forEach(System.out::println);
+        // lazyResult.count(); // IllegalStateException:  stream has already been operated upon or closed
+
+        /*
+        Correct way to avoid the "IllegalStateException" is given below:
+         */
+
+         List<String> lazyResult = copyForStream.stream()
+                .limit(15)
+                .filter(s -> s.startsWith("B") || s.startsWith("I"))
+                .map(s -> s.charAt(0)+"--"+s.substring(1))
+                .sorted()
+                 .collect(Collectors.toList());
+
+         // create a new stream each time.
+        lazyResult.forEach(System.out::println);
+
+        long count = lazyResult.size();
+        System.out.println("Count: "+count);
+
+        /* How can we create a stream directly?
+
+         */
+
+        String[] strings = new String[]{"One", "Two","Three"};
+        // var firstStream = Arrays.stream(new String[] {"One", "Two","Three"});
+        Stream<String> firstStream = Arrays.stream(strings)
+                .sorted(Comparator.reverseOrder());
+        System.out.println("---------------------------------");
+//        firstStream.forEach(System.out::println);
+        System.out.println("----------------------------------");
+        Stream<String> secondStream = Stream.of("five","six","seven")
+                .map(String::toUpperCase);
+//        secondStream.forEach(System.out::println);
+        System.out.println("---------Using Stream concatenation-----------------");
+        Stream.concat(secondStream,firstStream)
+                .map(s -> s.charAt(0)+" -> "+s)
+                .forEach(System.out::println);
+        /*
+        Map is not extends the collection interface and the map and its implemented classes are categories of their
+        own. The map interface does not have a stream method either, but you can use any of the maps collection views
+        like keySet, entrySet, or values to generate a stream to process parts of the map.
+         */
+
     }
 }
