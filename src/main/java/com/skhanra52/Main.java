@@ -165,5 +165,30 @@ public class Main {
         like keySet, entrySet, or values to generate a stream to process parts of the map.
          */
 
+        Map<Character, int[]> mymap = new LinkedHashMap<>(); // want to keep the insertion order.
+        int bingoIndex = 1;
+        for(char c : "BINGO".toCharArray()){
+            int[] numbers = new int[15];
+            int labelNo = bingoIndex;
+            Arrays.setAll(numbers, i -> i+ labelNo);
+            System.out.println(Arrays.toString(numbers));
+            mymap.put(c, numbers);
+            bingoIndex+=15;
+        }
+        System.out.println(mymap.toString());
+
+        mymap.entrySet()
+                .stream()
+                .map(e -> e.getKey() + " -> has range: "+ e.getValue()[0] +
+                        " - "+e.getValue()[e.getValue().length -1])
+                .forEach(System.out::println);
+
+//       String[] bingo = new String[15];
+//        Arrays.setAll(bingo, i -> {
+//            char letter = "BINGO".charAt(i / 3);
+//            System.out.println("Letter -> "+letter+" and i -> "+i+" "+" and i/3 -> "+i / 3 + " and -> i%15+1  -> "+ (i%15+1));
+//            return letter + "-" + (i % 15 + 1);
+//        });
+//        System.out.println(Arrays.toString(bingo));
     }
 }
