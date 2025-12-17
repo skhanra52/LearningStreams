@@ -2,6 +2,7 @@ package com.skhanra52;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Main {
@@ -190,5 +191,87 @@ public class Main {
 //            return letter + "-" + (i % 15 + 1);
 //        });
 //        System.out.println(Arrays.toString(bingo));
+
+        /*-----------Static method Stream.generator() in Stream------------------------------------
+        Stream has static method called generate(). This method takes a supplier (note: Supplier's functional method,
+        returns a value, but does not take any arguments).
+
+        Stream.generate(Supplier<? extends T> s)
+         */
+        Random random = new Random();
+        Stream.generate(() -> random.nextInt(2))
+                .limit(10)
+                .forEach((s) -> System.out.print(s+" "));
+
+        /*-----------Static method Stream.iterate() in Stream------------------------------------
+        Stream has static method called iterate(). This method takes two arguments, first is the starting value (called
+        seed) and second is the unary operator, which is a special kind of function.
+
+         */
+        System.out.println();
+        // infinite Stream and limit by 20
+        IntStream.iterate(1, n -> n+1)
+                .filter(Main::isPrime)
+                .limit(20)
+                .forEach((s) -> System.out.print(s+" "));
+
+        // Infinite Stream and limit by 100
+        System.out.println();
+        IntStream.iterate(1, n -> n+1)
+                .limit(100)
+                .filter(Main::isPrime)
+                .forEach((s) -> System.out.print(s+" "));
+
+        // Finite Stream, here the first param is seed, second param is predicate functional interface type.
+        // Third param is the unary operator.
+        System.out.println();
+        IntStream.iterate(1, (n) -> n <= 100, n -> n+1)
+//                .limit(100)
+                .filter(Main::isPrime)
+                .forEach((s) -> System.out.print(s+" "));
+
+        // range(start inclusive, end exclusive)
+        System.out.println();
+        IntStream.range(1, 100)
+                .filter(Main::isPrime)
+                .forEach((s) -> System.out.print(s+" "));
+
+        // rangeClosed(start inclusive, end inclusive)
+        System.out.println();
+        IntStream.rangeClosed(1, 100)
+                .filter(Main::isPrime)
+                .forEach((s) -> System.out.print(s+" "));
+
+        /*
+        Supplier, Predicate, Function, Consumer are part of Java’s functional interfaces (introduced in Java 8) and
+        are core to lambdas, streams, and modern Java.
+
+
+        Methods available to create Stream, we called those as Stream Source.
+          -> Collection.stream()
+          -> Arrays.stream(T[])
+          -> Stream.of(T...)
+          -> Stream.iterate(T seed, UnaryOperator<T> f)
+          -> Stream.iterate(T seed, Predicate<? Super T> p, UnaryOperator<T> f)
+          -> Stream.generate(Supplier<? extends T> s)
+          -> IntStream.range(int startInclusive, int endExclusive);
+          -> IntStream.rangeClosed(int startInclusive, int startInclusive);
+          -> LongStream.range(int startInclusive, int endExclusive);
+          -> LongStream.rangeClosed(int startInclusive, int startInclusive)
+
+         */
+    }
+
+    /**
+     * Checks prime number
+     * @return boolean
+     */
+    public static boolean isPrime(int number){
+        if(number<=2) return (number == 2);
+
+        for(int i=2; i<number ; i++){
+            if(number % i == 0) return false;
+        }
+        return true;
     }
 }
