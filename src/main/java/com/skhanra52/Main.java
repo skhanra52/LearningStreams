@@ -241,11 +241,10 @@ public class Main {
         IntStream.rangeClosed(1, 100)
                 .filter(Main::isPrime)
                 .forEach((s) -> System.out.print(s+" "));
-
+        System.out.println();
         /*
         Supplier, Predicate, Function, Consumer are part of Java’s functional interfaces (introduced in Java 8) and
         are core to lambdas, streams, and modern Java.
-
 
         Methods available to create Stream, we called those as Stream Source.
           -> Collection.stream()
@@ -259,7 +258,45 @@ public class Main {
           -> LongStream.range(int startInclusive, int endExclusive);
           -> LongStream.rangeClosed(int startInclusive, int startInclusive)
 
+          The most common intermediate operations:-------------------------------
+
+          1. Set of Operation that changes the number of elements in the Stream:
+             -> distinct():     Removes duplicate values from the stream and return Stream<T>
+             ------------
+             -> filter(Predicate<? super T> predicate)    | These methods allow you to reduce the elements in the output
+             -> takeWhile(Predicate<? super T> predicate) | Stream, elements that matches the predicate(condition) will
+             -> dropWhile(Predicate<? super T> predicate) | be kept in the stream in case of filter & takeWhile, and in
+                case of dropWhile if the predicate(condition) meet then drop the element from the stream. returns Stream<T>
+            -------------
+            -> limit(long maxSize) : This reduces the stream size specified in the argument. Returns Stream<T>
+            -> skip(long n)        : This method skip elements, meaning the element wouldn't be part of output stream.
+
+            Important: takeWhile() and dropWhile() is different from the filter() method. takeWhile()/dropWhile() stops
+            iteration the moment given predicate(condition) satisfied, and it stops the stream. it never iterates through
+            all remaining elements. In case the given condition is failed in the starting itself then takeWhile()/dropWhile()
+            will not return anything. Example: in the below,
+            .takeWhile(i -> i <= 'E')   works fine because it is satisfying condition will A to E,
+            .takeWhile(i -> i > 'E')   does not work because the iteration starts from A, and A > E is false and it stops.
+
          */
+        System.out.println("------intermediate methods explanation---------------------");
+         IntStream.iterate((int) 'A', n -> n <= (int) 'z', n -> n+1)
+                 .filter(Character::isAlphabetic)
+//                 .filter(i -> Character.toUpperCase(i) > 'E' )
+//                 .skip(5)
+                 .dropWhile(i -> Character.toUpperCase(i) <= 'E')    // 'E'  → char → numeric value 69, And char is an unsigned
+                 .takeWhile(i -> i < 'a')                            // 16-bit integer so i <= 69
+                 .forEach(d -> System.out.printf("%c ", d)); // d is an int, %c tells printf to treat that int as a
+                                                                // Unicode character
+
+        System.out.println();
+        System.out.println("----------------distinct example---------------------");
+        Random random1 = new Random();
+        Stream.generate(() -> random1.nextInt((int) 'A', (int) 'Z' +1))
+                .limit(50)
+                .distinct()
+                .forEach((item) -> System.out.printf("%c ",item));
+
     }
 
     /**
