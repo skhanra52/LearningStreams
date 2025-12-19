@@ -270,6 +270,15 @@ public class Main {
             -------------
             -> limit(long maxSize) : This reduces the stream size specified in the argument. Returns Stream<T>
             -> skip(long n)        : This method skip elements, meaning the element wouldn't be part of output stream.
+            -> peak(Consumer<? super T> action): This function does not change the stream, but allows us to perform some
+                interim consumer function while the pipeline is processing.
+            -> map(Function<? super T, extends R> mapper): We read "<? super T, extends R>" mapper as  "map takes a
+                function that can accept T or any of its superclasses, and return R or any of its subclasses".
+                 This function applies to every element in the stream. Because it's a function, the return type can be
+                different, which has the effort of transforming the stream to a different stream of different type.
+            -> sorted(): It uses the natural order sort, which means element in the stream must implement comparable.
+            -> sorted(Comparator<? super T> comparator) : If your element don't use Comparable, you'll want to use
+                sorted and pass a comparator.
 
             Important: takeWhile() and dropWhile() is different from the filter() method. takeWhile()/dropWhile() stops
             iteration the moment given predicate(condition) satisfied, and it stops the stream. it never iterates through
@@ -296,6 +305,39 @@ public class Main {
                 .limit(50)
                 .distinct()
                 .forEach((item) -> System.out.printf("%c ",item));
+        /*
+        Primitive Streams-----------------------
+        In addition to the generic Streams, that lets you stream any reference type, java has three primitive streams.
+
+      Special primitive|      Mapping from reference type                 |        Mapping from primitive type
+        streams        |      to primitive                                |        to reference type
+        ---------------------------------------------------------------------------------------------------------------
+        DoubleStream   | mapToDouble(ToDoubleFunction<? super T>  mapper) | mapToObj(DoubleFunction<? extends U> mapper)
+                       |                                                  | boxed()
+       ----------------------------------------------------------------------------------------------------------------
+       IntStream       | mapToInt(ToIntFunction<? super T> mapper)        | mapToObj(IntFunction<? extends U> mapper)
+                       |                                                  | boxed()
+       ----------------------------------------------------------------------------------------------------------------
+       LongStream      |mapToLong(ToLongFunction<? super T> mapper)       | mapToObj(LongFunction<? extends U> mapper)
+                       |                                                  | boxed()
+
+         */
+        System.out.println("--------Seat number Example-----------------");
+
+        int maxSeats = 100;
+        int seatsInRow = 10;
+        var stream = Stream.iterate(0, i -> i < maxSeats, i -> i+1)
+                .map(i -> new Seat((char) ('A' + i / seatsInRow), i % seatsInRow + 1))
+                .skip(5)
+                .limit(10)
+                .peek(s -> System.out.println("--> "+s)) // for debugging purpose we can use peek()
+                        .sorted(Comparator.comparing(Seat::price)
+                                .thenComparing(Seat::toString));
+//                .mapToDouble(Seat::price)
+//                .boxed()
+//                .mapToObj("%.2f"::formatted);  // final conversion to string while not using boxed()
+//                .map("%.2f"::formatted); // normal map while using boxed()
+        stream.forEach(System.out::println);
 
     }
 
