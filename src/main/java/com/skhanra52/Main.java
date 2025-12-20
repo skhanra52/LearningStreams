@@ -338,7 +338,6 @@ public class Main {
 //                .mapToObj("%.2f"::formatted);  // final conversion to string while not using boxed()
 //                .map("%.2f"::formatted); // normal map while using boxed()
         stream.forEach(System.out::println);
-
     }
 
     /**
