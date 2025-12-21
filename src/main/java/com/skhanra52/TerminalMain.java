@@ -1,5 +1,6 @@
 package com.skhanra52;
 
+import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.stream.IntStream;
 
@@ -63,8 +64,32 @@ public class TerminalMain {
         boolean        | anyMatch(Predicate<? super T> predicate)        |-> Returns true if there is at least one match
                        |                                                 | meet to the condition specified.
         boolean        | noneMatch(Predicate<? super T> predicate)       |-> The operation returns true if no match.
-
-
          */
+
+        SecondSeatRecord[] seatRecords = new SecondSeatRecord[100];
+        Arrays.setAll(seatRecords, (i) -> new SecondSeatRecord((char) ('A' + i/10), i %10));
+//        for(SecondSeatRecord seat : seatRecords){
+//            System.out.println(seat.rowMaker()+"0"+seat.seatNumber());
+//        }
+//        Arrays.asList(seatRecords).forEach(System.out::println);
+
+        long reservationCount = Arrays.stream(seatRecords)
+                .filter(SecondSeatRecord::isReserved)
+                .count();
+        System.out.println("reserveSeat : "+reservationCount);
+
+        boolean hasBookings = Arrays.stream(seatRecords)
+                .allMatch(SecondSeatRecord::isReserved);
+        System.out.println("hasBookings : "+hasBookings);
+
+        boolean hasBookingsAny = Arrays.stream(seatRecords)
+                .anyMatch(SecondSeatRecord::isReserved);
+        System.out.println("hasBookingsAny: "+hasBookingsAny);
+
+        boolean hasBookingsNone = Arrays.stream(seatRecords)
+                .noneMatch(SecondSeatRecord::isReserved);
+        System.out.println("hasBookingsNone: "+hasBookingsNone);
+
+
     }
 }
