@@ -45,7 +45,7 @@ public class CourseEngagement {
         return (double) (lastLecture * 100) / course.lectureCount();
     }
 
-    public int getMonthSinceActive(){
+    public int getMonthsSinceActive(){
         LocalDate now = LocalDate.now(); // current date
         long months = Period.between(lastActivityDate, now).toTotalMonths();
         return (int) months;
@@ -60,6 +60,6 @@ public class CourseEngagement {
     @Override
     public String toString() {
         return "%s: %s %d %s [%d]".formatted(course.courseCode(), getLastActivityMonth(), getLastActivityYear()
-                                            ,engagementType, getMonthSinceActive());
+                                            ,engagementType, getMonthsSinceActive());
     }
 }

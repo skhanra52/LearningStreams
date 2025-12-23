@@ -15,6 +15,7 @@
   2. engagement type
   3. last lecture
   4. last activity date
+
  It should have the usual getters, plus getters for calculated fields as shown here.
  -> The getMonthsSinceActive method should return the months elapsed, since the last course activity.
  -> The getPercentComplete method should use the last lecture, and the lecture count on course, to return a percentage complete.
@@ -37,8 +38,9 @@
   watchLecture(lecture, date)
   --------------------------------------------
  The Student class should have a student id, and demographic data, like country code, year enrolled, age at time of
- enrollment, gender, and a programming experience flag. Your student should also have a map of CourseEngagements,
- keyed by course code.
+ enrollment, gender, and a programming experience flag.
+ Your student should also have a map of CourseEngagements, keyed by course code.
+
  -> Include getters for all of these fields In addition to the usual getters, add getter methods for calculated fields,
     like getYearsSinceEnrolled, and getAge.
  -> Include the getters, getMonthsSinceActive and getPercentComplete, that take a course code and return data from the
