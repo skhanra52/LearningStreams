@@ -113,4 +113,36 @@ public class Student {
                 ", engagementMap=" + engagementMap +
                 '}';
     }
+
+    // Helper methods that picks the random item from an array of String.
+    private static String getRandomVal(String... data){
+        return data[random.nextInt(data.length)];
+    }
+
+    // Public static method on Student that will generate new instance, populated with lots of random data.
+    public static Student getRandomStudent(Course... courses){
+        int maxYear = LocalDate.now().getYear() + 1;
+        Student student = new Student(
+                getRandomVal("AU", "IN", "NZ", "UK", "USA", "CA", "CN"),
+                random.nextInt(2015, maxYear),
+                random.nextInt(18, 90),
+                getRandomVal("M","F","U"),
+                random.nextBoolean(),
+                courses
+                );
+
+        // Also want to get some random course activity
+        for(Course course: courses){
+            int lecture = random.nextInt(1, course.lectureCount());
+            int year = random.nextInt(student.getYearEnrolled(), maxYear);
+            int month = random.nextInt(1,13);
+            if(year == (maxYear - 1)){
+                if(month > LocalDate.now().getMonthValue()){
+                    month = LocalDate.now().getMonthValue();
+                }
+            }
+            student.watchLecture(course.courseCode(), lecture, month, year);
+        }
+        return student;
+    }
 }
