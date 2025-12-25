@@ -86,12 +86,39 @@ public class StreamingStudentMain {
 
     public static void main(String[] args) {
 
+        /*
+        Terminal operation examples:
+        ----------------------------------------------------------------------------------------------------------------
+        Return Type         |   Terminal Operations
+        ----------------------------------------------------------------------------------------------------------------
+        long                |   count()
+        DoubleStatistics    |   summaryStatistics()
+        boolean             |   allMatch(Predicate<? super T> predicate)
+        boolean             |   anyMatch(Predicate<? super T> predicate)
+        boolean             |   noneMatch(Predicate<? super T> predicate)
+        ----------------------------------------------------------------------------------------------------------------
+        The terminal operation challenges:
+        1. Create a source of stream of Student. - done
+        2. Use the static method as the supplier. - done
+        3. Use a large enough number to get a variety of student data.
+        4. Use a combination of the intermediate and terminal operations to answer the following questions:
+              i> How many male and female students are there in the group.
+             ii> How many students fall in the three age ranges, less than 30,between 30 and 60 years, over 60 years.
+            iii> Use summaryStatistics on the Student's age, to get better idea of how old the student population is.
+             iv> What countries are the student from, print a distinct list of the country codes.
+              v> Are there students that are still active and have enrolled more than 7 years? Use one of the match
+                 terminal operation to answer this question.
+             vi> Select 5 of the students above and print their information out.
+
+         */
+
+
+
         Course pymc = new Course("PYMC", "Python Masterclass");
         Course jmc = new Course("JMC", "Java Masterclass");
         Student tim = new Student("AU", 2019, 30, "M",
                 true, jmc, pymc);
-
-        System.out.println(tim);
+        System.out.println("Student:  "+tim);
         tim.watchLecture("JMC", 10, 5, 2019);
         tim.watchLecture("PYMC", 7, 7, 2020);
         System.out.println(tim);

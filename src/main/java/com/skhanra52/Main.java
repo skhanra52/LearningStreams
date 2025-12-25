@@ -51,7 +51,7 @@ public class Main {
         same changes will be reflected in the original list, because subList refer to the same location as original list.
         subList just return the view not the new list, so use subList when the original list has to be modified.
          */
-        System.out.println("---------Modified original List");
+        System.out.println("---------Modified original List---------------------");
         for(int i=0;i<15;i++){
             System.out.print(bingoPool.get(i)+", ");
         }
@@ -109,9 +109,15 @@ public class Main {
             Examples :  forEach()
                         collect()
                         toList()
+                        --------
                         count()
+                        max(), min(), average(), sum()
+                        --------
                         findFirst()
+                        allMatch()
                         anyMatch()
+                        noneMatch()
+                        summaryStatistics()
 
          */
 
