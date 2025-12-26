@@ -43,7 +43,7 @@ public class TerminalMain {
         Optional                | max()                     | All
         Optional                | min()                     | All
         OptionalDouble          | average()                 | DoubleStream, InStream, LongStream
-        double/int/long         | sum()                     |  DoubleStream, InStream, LongStream
+        double/int/long         | sum()                     | DoubleStream, InStream, LongStream
         ----
         DoubleSummaryStatistics |                           | DoubleStream
         IntSummaryStatistics    | summaryStatistics()       | IntStream

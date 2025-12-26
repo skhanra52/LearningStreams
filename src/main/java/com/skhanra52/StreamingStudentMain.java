@@ -80,6 +80,9 @@
 
 package com.skhanra52;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StreamingStudentMain {
@@ -123,9 +126,49 @@ public class StreamingStudentMain {
         tim.watchLecture("PYMC", 7, 7, 2020);
         System.out.println(tim);
 
-        Stream.generate(() -> Student.getRandomStudent(pymc,jmc))
-                .limit(10)
-                .forEach(System.out::println);
+        // 3. Use a large enough number to get a variety of student data.
+        List<Student> randomStudent =  Stream.generate(() -> Student.getRandomStudent(pymc,jmc))
+                .limit(20)
+                //.collect(Collectors.toList());
+                .toList();
+        
+        int maleCount = (int) randomStudent.stream()
+                .filter(student -> student.getGender().equals("M"))
+                .count();
+
+        int femaleStudent = (int) randomStudent.stream()
+                .filter((student) -> student.getGender().equals("F"))
+                .count();
+
+        System.out.println("Number of male student: "+ maleCount + " number of female student: "+femaleStudent);
+
+        // ----------------or----------------------
+
+        Map<String, Long> groupGender = randomStudent.stream()
+                .collect(Collectors.groupingBy(
+                        Student::getGender,
+                        Collectors.counting()));
+        long maleStudentCount = (groupGender.getOrDefault("M",0L));
+        long femaleStudentCount = groupGender.getOrDefault("F",0L);
+        System.out.println("Male Student Count: "+maleStudentCount +" and female student cont: "+femaleStudentCount);
+
+        // ii> How many students fall in the three age ranges, less than 30,between 30 and 60 years, over 60 years.
+
+        long ageBelowThirty = randomStudent.stream()
+                .filter((student) -> student.getAge() < 30)
+                .count();
+
+        long ageBetweenThirtyToSixty = randomStudent.stream()
+                .filter((student -> student.getAge() > 30 && student.getAge() < 60))
+                .count();
+
+        long ageAboveSixty = randomStudent.stream()
+                .filter((student -> student.getAge() > 60))
+                .count();
+
+        System.out.println("Student below thirty: "+ageBelowThirty +
+                ", student in between thirty to sixty: "+ageBetweenThirtyToSixty
+                + ", student above sixty: "+ageAboveSixty);
 
     }
 }
