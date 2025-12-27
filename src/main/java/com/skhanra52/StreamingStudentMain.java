@@ -82,6 +82,7 @@ package com.skhanra52;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -148,9 +149,14 @@ public class StreamingStudentMain {
                 .collect(Collectors.groupingBy(
                         Student::getGender,
                         Collectors.counting()));
-        long maleStudentCount = (groupGender.getOrDefault("M",0L));
-        long femaleStudentCount = groupGender.getOrDefault("F",0L);
-        System.out.println("Male Student Count: "+maleStudentCount +" and female student cont: "+femaleStudentCount);
+
+//        long maleStudentCount = (groupGender.getOrDefault("M",0L));
+//        long femaleStudentCount = groupGender.getOrDefault("F",0L);
+//        System.out.println("Male Student Count: "+maleStudentCount +" and female student cont: "+femaleStudentCount);
+        //--------- OR-----------------------------
+        for(String gender: new String[]{"M","F","U"}){
+            System.out.println(gender+" -> "+groupGender.getOrDefault(gender, 0L));
+        }
 
         // ii> How many students fall in the three age ranges, less than 30,between 30 and 60 years, over 60 years.
 
@@ -170,5 +176,17 @@ public class StreamingStudentMain {
                 ", student in between thirty to sixty: "+ageBetweenThirtyToSixty
                 + ", student above sixty: "+ageAboveSixty);
 
+        List<Predicate<Student>>  list = List.of(
+                (s) -> s.getAge() < 30,
+                (s) -> s.getAge() > 30 && s.getAge() < 60,
+                (s) -> s.getAge() > 60
+        );
+
+        for(int i = 0; i< list.size(); i++){
+            long counts = randomStudent.stream()
+                    .filter(list.get(i))
+                    .count();
+            System.out.println(list.get(i)+" count -> "+counts);
+        }
     }
 }
