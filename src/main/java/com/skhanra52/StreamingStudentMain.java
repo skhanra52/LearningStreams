@@ -84,6 +84,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StreamingStudentMain {
@@ -176,17 +177,72 @@ public class StreamingStudentMain {
                 ", student in between thirty to sixty: "+ageBetweenThirtyToSixty
                 + ", student above sixty: "+ageAboveSixty);
 
-        List<Predicate<Student>>  list = List.of(
-                (s) -> s.getAge() < 30,
-                (s) -> s.getAge() > 30 && s.getAge() < 60,
-                (s) -> s.getAge() > 60
-        );
+//        List<Predicate<Student>>  list = List.of(
+//                (s) -> s.getAge() < 30,
+//                (s) -> s.getAge() > 30 && s.getAge() < 60,
+//                (s) -> s.getAge() > 60
+//        );
 
-        for(int i = 0; i< list.size(); i++){
+//        for (Predicate<Student> studentPredicate : list) {
+//            long counts = randomStudent.stream()
+//                    .filter(studentPredicate)
+//                    .count();
+//            System.out.println(studentPredicate + " count -> " + counts);
+//        }
+        // ---------OR we can use enum here-----------------------
+        for(AgeGroup group : AgeGroup.values()){
             long counts = randomStudent.stream()
-                    .filter(list.get(i))
+                    .filter(group.predicate)
                     .count();
-            System.out.println(list.get(i)+" count -> "+counts);
+            System.out.println(group.description + " count -> " + counts);
         }
+
+        IntStream ageStream = randomStudent.stream()
+                .mapToInt(Student::getAgeEnrolled);
+        System.out.println("Stats for enrollment age: "+ageStream.summaryStatistics());
+
+        IntStream currentAgeStream = randomStudent.stream()
+                .mapToInt(Student::getAge);
+        System.out.println("Stats for current age: "+currentAgeStream.summaryStatistics());
+
+        //  iv> What countries are the student from, print a distinct list of the country codes.
+        randomStudent.stream()
+                .map(Student::getCountryCode)
+                .distinct()
+                .sorted()
+                .forEach((country) -> System.out.print(country+", "));
+
+        // v> Are there students that are still active and have enrolled more than 7 years? Use one of the match
+        //    terminal operation to answer this question.
+
+        System.out.println();
+        var olderActiveStudent = randomStudent.stream()
+                .anyMatch((student) -> (student.getAge() - student.getAgeEnrolled()) >= 7 &&
+                        student.getMonthsSinceActive() < 12);
+        System.out.println("Do we have older active student than 7 years? "+olderActiveStudent);
+
+    }
+}
+
+enum AgeGroup {
+    /*
+    Here BELOW_30, BETWEEN_30_60, and ABOVE_60 are the three values of enum AgeGroup which we can access through
+    AgeGroup.values() provided by compiler(values() is a compiler generated method).
+     -> Internally the BELOW_30, BETWEEN_30_60, and ABOVE_60 are the instance objects(how we instantiate a class in
+     main or another class by invoking the new constructor_name(args....))
+     -> Only changes here is the instances variables created with in the enum itself. so actually it looks like below
+        AgeGroup BELOW_30 = new AgeGroup("Age < 30", s -> s.getAge() < 30);
+        Predicate<Student> predicate = AgeGroup.BELOW_30.predicate;
+        System.out.println(predicate) // output: s -> s.getAge() < 30
+     */
+    BELOW_30("Age < 30", s -> s.getAge() < 30),
+    BETWEEN_30_60("Age between 30 to 60",  s -> s.getAge() > 30 && s.getAge() < 60),
+    ABOVE_60("Age above 60", s -> s.getAge() > 60);
+
+    final String description;
+    final Predicate<Student> predicate;
+    AgeGroup(String description, Predicate<Student> predicate){
+        this.description = description;
+        this.predicate = predicate;
     }
 }
