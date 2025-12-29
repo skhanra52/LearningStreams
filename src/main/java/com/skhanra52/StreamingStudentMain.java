@@ -130,9 +130,31 @@ public class StreamingStudentMain {
 
         // 3. Use a large enough number to get a variety of student data.
         List<Student> randomStudent =  Stream.generate(() -> Student.getRandomStudent(pymc,jmc))
-                .limit(20)
-                //.collect(Collectors.toList());
-                .toList();
+                .limit(200)
+                //.collect(Collectors.toList()); // This provides mutable list of Student
+                .toList(); // this provides immutable list Student which we can use may be on
+                           // Collections.shuffle( randomStudent) if we are using .collect(Collectors.toList())
+        /*
+
+        https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/stream/Collector.html
+        Interface Collector<T,A,R>
+        Type parameters:
+        T - the type of input elements to the reduction operation.
+        A - the mutable accumulation type of the reduction operation(often hidden as an implementation detail)
+        R - the result type of the reduction operation.
+
+            public interface Collector<T,A,R>{}
+            ------------------------------------
+            -> A mutable reduction operation that accumulates input elements into a mutable result container, optionally
+               transforming the accumulated result in to the final representation after input element has been processed.
+               reduction operations can be performed either sequentially or in parallel.
+            -> A Collector is specified by four functions that works together to accumulate entries in to mutable result
+               container, and optionally perform a final transform on the result. They are
+               1. Creation of new result container(supplier()).
+               2. Incorporating new data elements into a result container(accumulator()).
+               3. Combining two result containers in to one(combiner()).
+               4. Performing an optional final transform on the container(finisher()).
+         */
         
         int maleCount = (int) randomStudent.stream()
                 .filter(student -> student.getGender().equals("M"))
@@ -220,6 +242,21 @@ public class StreamingStudentMain {
                 .anyMatch((student) -> (student.getAge() - student.getAgeEnrolled()) >= 7 &&
                         student.getMonthsSinceActive() < 12);
         System.out.println("Do we have older active student than 7 years? "+olderActiveStudent);
+
+        //  vi> Select 5 of the students above and print their information out.
+        long longTerm = randomStudent.stream()
+                .filter((student) -> (student.getAge() - student.getAgeEnrolled()) >= 7 &&
+                        student.getMonthsSinceActive() < 12)
+                        .count();
+        System.out.println("Count of older active student than 7 years? "+longTerm);
+
+       randomStudent.stream()
+                .filter((student) -> (student.getAge() - student.getAgeEnrolled()) >= 7 &&
+                        student.getMonthsSinceActive() < 12)
+               .limit(5)
+               .forEach(System.out::println);
+        System.out.println("Count of older active student than 7 years? "+longTerm);
+
 
     }
 }
