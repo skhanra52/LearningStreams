@@ -140,7 +140,7 @@ public class Main {
                 .filter(s -> s.startsWith("B") || s.startsWith("I"))
                 .map(s -> s.charAt(0)+"--"+s.substring(1))
                 .sorted()
-                 .collect(Collectors.toList());
+                 .collect(Collectors.toList()); // creates mutable list
 
          // create a new stream each time.
         lazyResult.forEach(System.out::println);
