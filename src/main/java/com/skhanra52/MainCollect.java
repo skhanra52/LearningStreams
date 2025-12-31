@@ -44,6 +44,7 @@ public class MainCollect {
         youngAussies.retainAll(underThirty);
         System.out.println("# of Australian student under thirties: "+youngAussies.size());
 
+        System.out.println("Ordered Set");
         youngAussies.forEach(s -> System.out.print(s.getStudentId() + " " ));
         System.out.println();
         // Here the output is un-ordered as its getting HashSet from the Collectors.toSet()
@@ -51,13 +52,46 @@ public class MainCollect {
         aussiesUnderThirty.forEach(s -> System.out.print(s.getStudentId() + " " ));
         System.out.println();
         // Need to check the below code as it's not compiling
-//        Set<Student> aussiesUnderThirtyOrdered = studentList.stream()
-//                .filter(student -> student.getCountryCode().equals("AU"))
-//                .filter(student -> student.getAge() < 30)
-//                .sorted()
-//                .collect(TreeSet::new, TreeSet::add, TreeSet:: addAll);
-//        aussiesUnderThirtyOrdered.forEach(s -> System.out.print(s.getStudentId() + " " ));
-//        System.out.println();
+        Set<Student> aussiesUnderThirtyOrdered = studentList.stream()
+                .filter(student -> student.getCountryCode().equals("AU"))
+                .filter(student -> student.getAge() < 30)
+                .collect(
+                        () -> new TreeSet<>(Comparator.comparing(Student::getStudentId)),
+                        TreeSet::add,
+                        TreeSet:: addAll
+                );
+        System.out.println("Ordered Set");
+        aussiesUnderThirtyOrdered.forEach(s -> System.out.print(s.getStudentId() + " " ));
+        System.out.println();
+        /*
+        The Collect method has two overloaded versions.
+        The first can be used by passing it the result of the many factory methods on the Collectors class. As example
+        asList, asSet etc.
+        Second one below gives more flexibility
+        .collect( () -> new TreeSet<>(Comparator.comparing(Student::getStudentId)),
+                TreeSet::add,
+                TreeSet:: addAll)
+
+
+        Return Type    | Method Parameters
+        ----------------------------------------------------------------------------------------------------------------
+         R             | collect(Collector collector)
+         R             | collect(Supplier supplier, BiConsumer accumulator, BiConsumer combiner)
+        ----------------------------------------------------------------------------------------------------------------
+         */
+
+        /*
+        Reduce() method is different from the collect() method, unlike collect() which cumulates the date in a container
+        reduce() cumulate date to one type.
+         */
+
+        String countryList = studentList.stream()
+                .map(Student::getCountryCode)
+                .distinct()
+                .sorted()
+                .reduce("", (r,v) -> r + " " + v);
+
+        System.out.println("CountryList: "+countryList);
 
     }
 }
