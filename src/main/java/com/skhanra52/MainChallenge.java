@@ -29,9 +29,9 @@ public class MainChallenge {
         Course cgj = new Course("CGJ", "Create Gaming Java");
 
         List<Student> studentList = Stream.generate(() -> Student.getRandomStudent(pymc, jmc))
-                .limit(100)
+                .limit(50)
                 .toList();
-        studentList.forEach(System.out::println);
+//        studentList.forEach(System.out::println);
 
         // Use the getPercentageComplete() method, to calculate the average percentage completed for all the students
         // for just the "Java Masterclass" using the reduce terminal operation.
@@ -44,29 +44,36 @@ public class MainChallenge {
 
         // Use the result, multiplying by 1.25, to collect a group of students(either as a list or a set). These would
         // be student who has completed more than three quarters of that average percentage.
-
-       var completedStudentList = studentList.stream()
+       List<Student> completedStudentList = studentList.stream()
                .filter((student) -> {
                    double completedPercent = student.getEngagementMap().get("JMC").getPercentComplete();
                    return completedPercent > avgCompletedPercentage * 1.25;
                })
-               .sorted(Comparator.comparing(student -> {
-                      int abc =  student.getEngagementMap()
-                               .get("JMC")
-                               .getLastActivityYear();
-                      return abc;
-                    }
-                )
-               )
-//               .sorted(Comparator.comparing(student -> {
-//                   return student.getEngagementMap().get("JMC").getLastActivityMonth();
-//               }))
+               .sorted(Comparator.comparing(student -> student.getEngagementMap()
+                        .get("JMC")
+                        .getLastActivityYear()
+                ))
                .toList();
-       System.out.println("----------------------------------");
+       System.out.println("------Students above average completion percentage----------------------------");
         completedStudentList.forEach(System.out::println);
 
         // Sort by the longest enrolled students who are still active, because you are going to offer your new course to
         // 10 of the students for a trial run.
-
+        // Add a new course to these ten students.
+        List<Student> activeStudentList = studentList.stream()
+                .filter(student ->
+                        student.getEngagementMap()
+                                .get("JMC")
+                                .getMonthsSinceActive() < 12)
+                .sorted(Comparator.comparingInt(
+                        student ->  student.getEngagementMap()
+                                .get("JMC")
+                                .getMonthsSinceActive())
+                        )
+                .limit(10)
+                .peek((Student student) -> student.addCourse(cgj))
+                .toList();
+        System.out.println("------Long term active student----------------------------");
+        activeStudentList.forEach(System.out::println);
     }
 }
