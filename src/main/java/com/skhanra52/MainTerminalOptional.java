@@ -74,5 +74,18 @@ public class MainTerminalOptional {
                 .average()
                 .ifPresentOrElse(a -> System.out.printf("Average age under 21: %.2f%n", a),
                         () -> System.out.println("Didn't find anyone under " +minAge));
+
+        // Reduce example, this is a single parameter version, that returns an optional. Get the countries of under 21.
+        // in a single comma delimitation.
+
+        studentList.stream()
+                .filter(s -> s.getAge() <= minAge)
+                .map(Student::getCountryCode)
+                .distinct()
+                .reduce((a,b) -> String.join(",",a,b))// in the optional reduce(BinaryFunc)
+                .ifPresentOrElse(System.out::println,
+                        () -> System.out.println("Not found"));
+
+
     }
 }
